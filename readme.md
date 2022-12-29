@@ -1,7 +1,7 @@
 # ESE 5060 Final Project (Team Dark Moon): A Mouse-keyboard System Embedded on A Glove
-
+<div align="center">
 <img src="./media/mouse_keyboard_glove.jpg" alt="Glove" width="300"/>
-
+</div>
 ## I - Overview
 ### 1.1 What is it?
 * We designed a mouse-keyboard system which have the curser moving, right clicking, left clicking, and gesture writing functions.
@@ -57,7 +57,7 @@ Colab version of the training part: https://colab.research.google.com/drive/1JqM
 
 The accuracy of our model after 50 epochs of training:
 
-<img src="./train/images/keyboard_model_acc_epochs_50.jpg" alt="Accuracy" width="300"/>
+<img src="./media/images/keyboard_model_acc_epochs_50.jpg" alt="Accuracy" width="300"/>
 
 ### 3.3 Issues
 We cannot find how the author, ArduCAM, of the [magic_wand_ble project](https://github.com/ArduCAM/pico-tflmicro/tree/main/examples/magic_wand_ble) train the original model. Thus, we built a classification network from scratch, referencing the network structure of [magic_wand project](https://github.com/tensorflow/tflite-micro/tree/main/tensorflow/lite/micro/examples/magic_wand) of tflit.
@@ -68,12 +68,12 @@ We encountered a warning stating `WARNING:absl:Found untraced functions such as 
 #### 3.3.2 Data Type Issue
 In the magic_wand_ble code, it requires the type of the model input to be `kTfLiteInt8 = 9`. We specified the data type of our dataset as `int8` when we converted data to tensor `tf.convert_to_tensor(this_data_batch, dtype=tf.int8)`. However, we load the pre-trained model to the magic_wand_ble system, it shows that the model input data type is still `kTfLiteFloat32 = 1`. We do not know how to solve this yet.
 
-<img src="./train/images/data_type_issue.png" alt="Data_Type_Issue" width="600"/>
+<img src="./media/images/data_type_issue.png" alt="Data_Type_Issue" width="600"/>
 
 #### 3.3.3 Model Size Issue
 The new model is about twice as big as the original model (original model: around 20000 parameters; our model: around 50000 parameters). Our system will out of memory after several times of writing.
 
-<img src="./train/images/out_of_memory_issue.png" alt="Memory_Issue" width="600"/>
+<img src="./media/images/out_of_memory_issue.png" alt="Memory_Issue" width="600"/>
 
 ---
 

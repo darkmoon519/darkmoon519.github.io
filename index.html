@@ -1,0 +1,131 @@
+<h1 id="ese-5060-final-project-team-dark-moon-a-mouse-keyboard-system-embedded-on-a-glove">ESE 5060 Final Project (Team Dark Moon): A Mouse-keyboard System Embedded on A Glove</h1>
+<p><div align="center"><img src="./media/mouse_keyboard_glove.jpg" alt="Glove" width="300" align ="center"/></div> </p>
+<h2 id="i-overview">I - Overview</h2>
+<h3 id="1-1-what-is-it-">1.1 What is it?</h3>
+<ul>
+<li>We designed a mouse-keyboard system which have the curser moving, right clicking, left clicking, and gesture writing functions.</li>
+<li>User can achive the curser function by rotating hand and can achived the clicking function by shaking fingers in the air. The keyboard function is under implementation.</li>
+</ul>
+<h3 id="1-2-how-to-use-it-">1.2 How to use it?</h3>
+<ul>
+<li><strong>Cursor Movement:</strong> There&#39;re two metal panels on these two rings. When you want to move the cursor, just hold these two fingers and let metal contact. The movment direction follows the direction of your palm. Relase fingers can stop moving cursor.</li>
+<li><strong>Right and Left Clicking:</strong> A click can be done anytime you want. Just act like you are clicking mouse using your thumb(left click) or index finger(right click).</li>
+</ul>
+<h3 id="1-3-how-did-we-achieve-this-">1.3 How did we achieve this?</h3>
+<ul>
+<li>We use one IMU to catch orientation change happening on the hand. The accelerometer data is parsed into angles between zx, yx(capture movment inside yz plane). A moving distance corresponds to the angle between z-axis and x-axis and y-axis and x-axis. S.t. a larger angle corresponds to a long movment. We applied sliding window algorithm to smooth data,which average new collected data and previous some data in a time window. This simple and good at reducing noise. </li>
+<li>We also applied one IMU on thumb and one on index finger to catch an accident and fast movment for clicking use.</li>
+</ul>
+<h3 id="1-4-where-did-we-apply-pio-program-">1.4 Where did we apply PIO program?</h3>
+<ul>
+<li>Unfortunately we didn&#39;t applied PIO in our program at last. We intended to use it to do addition at the beginning based on bit operation <code>x + y == ~(~x - y)</code>. We will explain this later. </li>
+</ul>
+<h3 id="1-5-what-we-haven-t-done-">1.5 What we haven&#39;t done:</h3>
+<ul>
+<li>Actually our inital design is a device intergrated mouse and keyboard functions. In our inital plan, keyboard can be achived by adjusting Arducam&#39;s magic-wand-ble example and combining tinyusb&#39;s HID API.</li>
+<li>We didn&#39;t accomplish keyboard function, but we did want to let you know that we also spent lots of time on that function. There&#39;re still two issues unresloved in keyboard part:<ul>
+<li>Although we already trained a model that can recognize 26 character and digits, the trained model cannot be deployed on board because some unidentifed errors;</li>
+<li>We haven&#39;t understand the logic to use keyboard API from tinyusb, we didn&#39;t find the release keycode method before project deadline. </li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="ii-mouse-functions">II - Mouse Functions</h2>
+<h3 id="3-1-data-filter">3.1 Data filter</h3>
+<p>The raw data accessed from the IMU sensor contained extensive noise, which complicated the problem. Therefore, to acqurie a clean data, we needed to apply a filter to smooth the raw data. We compared slide window filter and Kalman filter and decided to use slide window because of the adaptabiltiy and simple execution. It mainly averaged the past data in a fixed window size plus the current data. By adjusting the windows size, we can acquire data in different smooth level. A slide window example is displayed below, effects can be easily observed. </p>
+<p><img src="./media/slide_window.png" alt="Data_Type_Issue" width="300"/></p>
+<h3 id="3-2">3.2</h3>
+<hr>
+<p>D
+e
+s
+c
+r
+i
+p
+t
+i
+o
+n
+. </p>
+<hr>
+<h2 id="iii-keyboard-functions">III - Keyboard Functions</h2>
+<h3 id="3-1-goal">3.1 Goal</h3>
+<p>The original magic_wand_ble model can only classify between 0-9. We built our network to classify between both 0-9 and A-Z, which means our model has 36 classes now.</p>
+<h3 id="3-2-result">3.2 Result</h3>
+<p>Colab version of the training part: <a href="https://colab.research.google.com/drive/1JqMVoSU88o-7ZZmzwoQUtnsRRwZ0dx7c?usp=sharing">https://colab.research.google.com/drive/1JqMVoSU88o-7ZZmzwoQUtnsRRwZ0dx7c?usp=sharing</a></p>
+<p>The accuracy of our model after 50 epochs of training:</p>
+<p><img src=" ./media/images/keyboard_model_acc_epochs_50.jpg" alt="Accuracy" width="300"/></p>
+<h3 id="3-3-issues">3.3 Issues</h3>
+<p>We cannot find how the author, ArduCAM, of the <a href="https://github.com/ArduCAM/pico-tflmicro/tree/main/examples/magic_wand_ble">magic_wand_ble project</a> train the original model. Thus, we built a classification network from scratch, referencing the network structure of <a href="https://github.com/tensorflow/tflite-micro/tree/main/tensorflow/lite/micro/examples/magic_wand">magic_wand project</a> of tflit.</p>
+<h4 id="3-3-1-tflite-issue">3.3.1 TFLite Issue</h4>
+<p>We encountered a warning stating <code>WARNING:absl:Found untraced functions such as _jit_compiled_convolution_op, _jit_compiled_convolution_op while saving (showing 2 of 2). These functions will not be directly callable after loading.</code>. We found <a href="https://github.com/tensorflow/tensorflow/issues/47554">this issue</a> is still opening on the TFLite Github. We were not sure if this warning would affect the loading process of our model.</p>
+<h4 id="3-3-2-data-type-issue">3.3.2 Data Type Issue</h4>
+<p>In the magic_wand_ble code, it requires the type of the model input to be <code>kTfLiteInt8 = 9</code>. We specified the data type of our dataset as <code>int8</code> when we converted data to tensor <code>tf.convert_to_tensor(this_data_batch, dtype=tf.int8)</code>. However, we load the pre-trained model to the magic_wand_ble system, it shows that the model input data type is still <code>kTfLiteFloat32 = 1</code>. We do not know how to solve this yet.</p>
+<p><img src=" ./media/images/data_type_issue.png" alt="Data_Type_Issue" width="600"/></p>
+<h4 id="3-3-3-model-size-issue">3.3.3 Model Size Issue</h4>
+<p>The new model is about twice as big as the original model (original model: around 20000 parameters; our model: around 50000 parameters). Our system will out of memory after several times of writing.</p>
+<p><img src=" ./media/images/out_of_memory_issue.png" alt="Memory_Issue" width="600"/></p>
+<hr>
+<h2 id="iv-pio">IV -  PIO</h2>
+<p>PIO is a good tool to work as a flexiable commmunication port such as UART, IIC or SPI, but considering we only need one I2C port for our application so we gave up this idea. We also considered using PIO to do simple data processing: addition. PIO can achieve addition in the way <code>x + y == ~(~x - y)</code>.</p>
+<p>to do so pio will invert x and y and then using a loop to execute while y x it did a fair work if it calculates small numbers while if the number is extremenly large or it is a negative number it is possible to reach 2 32 iteration for a result in our experiment it is very slow to calcute summation between two large positive number or addition including negative number so we had to gave up this idea as well but if anyone knows how to optimze this process feel free to contact us ">* To do so, PIO will invert x and y and then using a loop to execute <code>while(y--) x--</code>. It did a fair work if it calculates small numbers, while if the number is extremenly large or it is a negative number, it is possible to reach 2^32 iteration for a result, in our experiment, it is very slow to calcute summation between two large positive number or addition including negative number. So we had to gave up this idea as well. But if anyone knows how to optimze this process, feel free to contact us!</p>
+<h2 id="v-contribution">V - Contribution</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Member</th>
+<th style="text-align:left">Github Account</th>
+<th style="text-align:left">Contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Rongqian Chen</td>
+<td style="text-align:left"><a href="https://github.com/WillChan9">@WillChan9</a> </td>
+<td style="text-align:left">Implemented curser moving, mouse left clicking, mouse right clicking functions.</td>
+</tr>
+<tr>
+<td style="text-align:left">Qi Xue</td>
+<td style="text-align:left"><a href="https://github.com/sueqixue">@sueqixue</a> </td>
+<td style="text-align:left">Collected data for gesture recognization model, building the model from scartch (including the data processing, model structure tuning, and model training), and implemented model deploying function which connected the gesture recogniztion model with the system.</td>
+</tr>
+<tr>
+<td style="text-align:left">Junpeng Zhao</td>
+<td style="text-align:left"><a href="https://github.com/PZZ97">@PZZ97</a> </td>
+<td style="text-align:left">Investigate tinyusb API, IMU data flitering algorithm, reconstruct code body to adapt to multifunctions, PIO application.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="vi-others-">VI - Others:</h2>
+<h3 id="6-1-materials-">6.1 Materials:</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Module</th>
+<th style="text-align:left">Quantity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Pico4ML</td>
+<td style="text-align:left">1</td>
+</tr>
+<tr>
+<td style="text-align:left">MPU6050</td>
+<td style="text-align:left">2</td>
+</tr>
+<tr>
+<td style="text-align:left">3D printed rings</td>
+<td style="text-align:left">2</td>
+</tr>
+<tr>
+<td style="text-align:left">glove</td>
+<td style="text-align:left">1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="6-3-reference">6.3 Reference</h3>
+<p><a href="https://github.com/ArduCAM/pico-tflmicro">Arducam/pico-tfmicro/magic-wand-ble</a></p>
+<p>Tinyusb </p>
