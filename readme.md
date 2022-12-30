@@ -92,7 +92,36 @@ PIO is a good tool to work as a flexiable commmunication port such as UART, IIC 
 |MPU6050|2|
 |3D printed rings|2|
 |glove|1|
-
+### 6.2 Files
+└── pico-tflmicro-main<br>
+    ├── CMakeLists.txt<br>
+    ├── example_auto_set_url.cmake<br>
+    ├── examples        // Core code is here<br>
+    │   └── magic_wand_ble<br>
+    │       ├── CMakeLists.txt<br>
+    │       ├── imu_provider.h      // pico4ml onboard imu data processing<br>
+    │       ├── kalman_filter.h<br>
+    │       ├── kalman_filter_MPU6050.cpp<br>
+    │       ├── magic_wand_model_data.cpp<br>
+    │       ├── magic_wand_model_data.h<br>
+    │       ├── main.cpp<br>
+    │       ├── main_functions.cpp  // imu data parsing and gesture recognition code<br>
+    │       ├── main_functions.h<br>
+    │       ├── micro_features_data.cpp<br>
+    │       ├── micro_features_data.h<br>
+    │       ├── rasterize_stroke.cpp<br>
+    │       ├── rasterize_stroke.h<br>
+    │       └── tusb_hid            // HID related operations, refer to TinyUSB<br>
+    │           ├── hid_src.cpp<br>
+    │           ├── hid_src.h<br>
+    │           ├── tusb_config.h<br>
+    │           ├── usb_descriptors.cpp<br>
+    │           └── usb_descriptors.h<br>
+    ├── pico_sdk_import.cmake<br>
+    ├── include   // bring from magic_wand_ble<br>
+    └── src       // bring from magic_wand_ble<br>
+        ├── tensorflow<br>
+        └── third_party<br>
 ### 6.3 Reference 
 [Arducam/pico-tfmicro/magic-wand-ble](https://github.com/ArduCAM/pico-tflmicro)
 

@@ -31,7 +31,11 @@
 </ul>
 <hr>
 <h2 id="ii-mouse-functions">II - Mouse Functions</h2>
+<br>
+The code flow chart is shown below. It is mainly about mouse function.
+<p><div align="center"><img src="./media/flowchart.jpeg" alt="Data_Type_Issue" width="500"/></div></p>
 <h3 id="2-1-data-filter">3.1 Data filter</h3>
+
 <p>The raw data accessed from the IMU sensor contained extensive noise, which complicated the problem. Therefore, to acqurie a clean data, we needed to apply a filter to smooth the raw data. We compared slide window filter and Kalman filter and decided to use slide window because of the adaptabiltiy and simple execution. It mainly averaged the past data in a fixed window size plus the current data. By adjusting the windows size, we can acquire data in different smooth level. A slide window example is displayed below, effects can be easily observed. </p>
 <p><img src="./media/slide_window.png" alt="Data_Type_Issue" width="300"/></p>
 <h3 id="2-2">3.2</h3>
@@ -118,6 +122,38 @@
 </tr>
 </tbody>
 </table>
+<h3 id="6-2 Directory">6.2 Directory</h3>
+<p>
+    &#9507 &#9473 pico-tflmicro-main<br>
+     &#9507 &#9473 CMakeLists.txt<br>
+     &#9507 &#9473 example_auto_set_url.cmake<br>
+     &#9507 &#9473 examples        // Core code is here<br>
+     &#9475 &#9      &#9495 &#9473 magic_wand_ble<br>
+     &#9475 &#9      &#9507 &#9473 CMakeLists.txt<br>
+     &#9475 &#9      &#9507 &#9473 imu_provider.h      // pico4ml onboard imu data processing<br>
+     &#9475 &#9      &#9507 &#9473 kalman_filter.h<br>
+     &#9475 &#9      &#9507 &#9473 kalman_filter_MPU6050.cpp<br>
+     &#9475 &#9      &#9507 &#9473 magic_wand_model_data.cpp<br>
+     &#9475 &#9      &#9507 &#9473 magic_wand_model_data.h<br>
+     &#9475 &#9      &#9507 &#9473 main.cpp<br>
+     &#9475 &#9      &#9507 &#9473 main_functions.cpp  // imu data parsing and gesture recognition code<br>
+     &#9475 &#9      &#9507 &#9473 main_functions.h<br>
+     &#9475 &#9      &#9507 &#9473 micro_features_data.cpp<br>
+     &#9475 &#9      &#9507 &#9473 micro_features_data.h<br>
+     &#9475 &#9      &#9507 &#9473 rasterize_stroke.cpp<br>
+     &#9475 &#9      &#9507 &#9473 rasterize_stroke.h<br>
+     &#9475 &#9      &#9495 &#9473 tusb_hid            // HID related operations, refer to TinyUSB<br>
+     &#9475 &#9          &#9507 &#9473 hid_src.cpp<br>
+     &#9475 &#9          &#9507 &#9473 hid_src.h<br>
+     &#9475 &#9          &#9507 &#9473 tusb_config.h<br>
+     &#9475 &#9          &#9507 &#9473 usb_descriptors.cpp<br>
+     &#9475 &#9          &#9495 &#9473 usb_descriptors.h<br>
+     &#9507 &#9473 pico_sdk_import.cmake<br>
+     &#9507 &#9473 include   // bring from magic_wand_ble<br>
+     &#9495 &#9473 src       // bring from magic_wand_ble<br>
+         &#9507 &#9473 tensorflow<br>
+         &#9495 &#9473 third_party<br>
+</p>
 <h3 id="6-3-reference">6.3 Reference</h3>
 <p><a href="https://github.com/ArduCAM/pico-tflmicro">Arducam/pico-tfmicro/magic-wand-ble</a></p>
 <p>Tinyusb </p>
