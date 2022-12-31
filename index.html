@@ -3,8 +3,8 @@
 <h2 id="i-overview">I - Overview</h2>
 <h3 id="1-1-what-is-it-">1.1 What is it?</h3>
 <ul>
-<li>We designed a mouse-keyboard system which have the curser moving, right clicking, left clicking, and gesture writing functions.</li>
-<li>User can achive the curser function by rotating hand and can achived the clicking function by shaking fingers in the air. The keyboard function is under implementation.</li>
+<li>We designed a mouse-keyboard system which have the cursor moving, right clicking, left clicking, and gesture writing functions.</li>
+<li>User can achive the cursor function by rotating hand and can achived the clicking function by shaking fingers in the air. The keyboard function is under implementation.</li>
 </ul>
 <h3 id="1-2-how-to-use-it-">1.2 How to use it?</h3>
 <ul>
@@ -34,11 +34,11 @@
 <br>
 The code flow chart is shown below. It is mainly about mouse function.
 <p><div align="center"><img src="./media/flowchart.jpeg" alt="Data_Type_Issue" width="500"/></div></p>
-<h3 id="2-1-data-filter">3.1 Data filter</h3>
+<h3 id="2-1-data-filter">2.1 Data filter</h3>
 
 <p>The raw data accessed from the IMU sensor contained extensive noise, which complicated the problem. Therefore, to acqurie a clean data, we needed to apply a filter to smooth the raw data. We compared slide window filter and Kalman filter and decided to use slide window because of the adaptabiltiy and simple execution. It mainly averaged the past data in a fixed window size plus the current data. By adjusting the windows size, we can acquire data in different smooth level. A slide window example is displayed below, effects can be easily observed. </p>
 <p><img src="./media/slide_window.png" alt="Data_Type_Issue" width="300"/></p>
-<h3 id="2-2">3.2</h3>
+<h3 id="2-2">2.2</h3>
 <!-- <hr> -->
 <p>The cursor position is determined by palm direction, instead of palm position. Because position requires integrate the accelerometer data twice, and any small error will accumulate into a large error, which lead to a inaccurate and unstable result. Instead, we use the accelerometer to estimate the gravity direction and obtain a more accurate angle estimation. The gravity is calculated by the mean of a few acceleration(force) data before, the current angle to x,y axis is acquired by "atan" function. Finally, the angles will map to position linearly.
 
@@ -79,7 +79,7 @@ The code flow chart is shown below. It is mainly about mouse function.
 <tr>
 <td style="text-align:left">Rongqian Chen</td>
 <td style="text-align:left"><a href="https://github.com/WillChan9">@WillChan9</a> </td>
-<td style="text-align:left">Implemented curser moving, mouse left clicking, mouse right clicking functions.</td>
+<td style="text-align:left">Implemented IMU data processing, mouse cursor movement computation and HID functions. </td>
 </tr>
 <tr>
 <td style="text-align:left">Qi Xue</td>
